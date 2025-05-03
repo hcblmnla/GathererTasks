@@ -18,7 +18,6 @@ public interface GathererTasks<T> {
     Gatherer<T, ?, List<T>> grouped(Predicate<? super T> predicate);
 
     /// Splits elements into lists by predicate.
-    /// `O(k)` memory where `k` is number of _good_ elements.
     Gatherer<T, ?, List<T>> split(Predicate<? super T> predicate);
 
     /// Groups ascending elements into lists by comparator.

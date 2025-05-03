@@ -20,9 +20,6 @@ void main() {
             gathererTasks.split(n -> n % 2 == 0),
             gathererTasks.ascending(Integer::compareTo)
         )
-        .forEach(gatherer -> System.out.println(
-            list.stream()
-                .gather(gatherer)
-                .toList()
-        ));
+        .map(gatherer -> list.stream().gather(gatherer).toList())
+        .forEach(System.out::println);
 }
