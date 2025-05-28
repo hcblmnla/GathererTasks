@@ -1,4 +1,9 @@
-final int CHUNK_SIZE = 3;
+/*
+Output:
+	Hello: Hello: 1, 22, 333, Hello: 4444, 55555, 666666, Hello: 7777777, !
+ */
+
+final int chunkSize = 3;
 
 <T, A, R> R parallel(
     final List<? extends T> values,
@@ -9,7 +14,7 @@ final int CHUNK_SIZE = 3;
     final Function<A, R> finisher
 ) {
     return values.stream()
-        .gather(Gatherers.windowFixed(CHUNK_SIZE))
+        .gather(Gatherers.windowFixed(chunkSize))
         .map(group -> CompletableFuture.supplyAsync(
             () -> group.stream().reduce(identity.get(), accumulator, combiner),
             executor
@@ -22,11 +27,6 @@ final int CHUNK_SIZE = 3;
         .toList()
         .getFirst();
 }
-
-/*
-Output:
-	Hello: Hello: 1, 22, 333, Hello: 4444, 55555, 666666, Hello: 7777777, !
- */
 
 void main() {
     System.out.println(
