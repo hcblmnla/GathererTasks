@@ -7,5 +7,5 @@
 
 ## TODO
 
-- [ ] parallelism
+- [x] parallelism
 - [ ] JMH benchmarks
