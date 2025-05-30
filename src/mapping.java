@@ -11,21 +11,22 @@ final int chunkSize = 3;
     final Supplier<A> identity,
     final BiFunction<A, ? super T, A> accumulator,
     final BinaryOperator<A> combiner,
-    final Function<A, R> finisher
+    final Function<? super A, ? extends R> finalizer
 ) {
-    return values.stream()
+    final List<CompletableFuture<A>> batches = values.stream()
         .gather(Gatherers.windowFixed(chunkSize))
-        .map(group -> CompletableFuture.supplyAsync(
-            () -> group.stream().reduce(identity.get(), accumulator, combiner),
-            executor
-        ))
-        .toList()
-        .stream()
+        .map(
+            group -> CompletableFuture.supplyAsync(
+                () -> group.stream().reduce(identity.get(), accumulator, combiner),
+                executor
+            )
+        )
+        .toList();
+    return batches.stream()
         .map(CompletableFuture::join)
         .gather(Gatherers.fold(identity, combiner))
-        .map(finisher)
-        .toList()
-        .getFirst();
+        .map(finalizer)
+        .toList().getFirst();
 }
 
 void main() {
